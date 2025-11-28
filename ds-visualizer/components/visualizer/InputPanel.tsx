@@ -22,6 +22,7 @@ export function InputPanel({ onRun, algorithmId }: InputPanelProps) {
     const [startNode, setStartNode] = useState('0');
     const [numberInput, setNumberInput] = useState('4');
     const [frequencies, setFrequencies] = useState('a:5, b:9, c:12, d:13, e:16'); // char:freq
+    const [expression, setExpression] = useState('5 3 + 2 *'); // postfix default
 
     const algorithm = getAlgorithm(algorithmId);
     if (!algorithm) return null;
@@ -87,6 +88,15 @@ export function InputPanel({ onRun, algorithmId }: InputPanelProps) {
                         return { char: char.trim(), freq: Number(freq) };
                     });
                     onRun({ frequencies: freqs });
+                    break;
+
+                case 'expression':
+                    onRun({ expression });
+                    break;
+
+                case 'dimensions':
+                    const dims = arrayInput.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+                    onRun({ dimensions: dims });
                     break;
 
                 default:
@@ -256,6 +266,32 @@ export function InputPanel({ onRun, algorithmId }: InputPanelProps) {
                         onChange={(e) => setFrequencies(e.target.value)}
                         className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none font-mono"
                         placeholder="a:5, b:9, c:12"
+                    />
+                </div>
+            )}
+
+            {algorithm.inputType === 'expression' && (
+                <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium text-gray-700">Expression</label>
+                    <input
+                        type="text"
+                        value={expression}
+                        onChange={(e) => setExpression(e.target.value)}
+                        className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                        placeholder={algorithm.id === 'infix-to-postfix' ? '(A+B)*C' : '5 3 + 2 *'}
+                    />
+                </div>
+            )}
+
+            {algorithm.inputType === 'dimensions' && (
+                <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium text-gray-700">Matrix Dimensions (e.g. 10, 30, 5, 60)</label>
+                    <input
+                        type="text"
+                        value={arrayInput}
+                        onChange={(e) => setArrayInput(e.target.value)}
+                        className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                        placeholder="10, 30, 5, 60"
                     />
                 </div>
             )}

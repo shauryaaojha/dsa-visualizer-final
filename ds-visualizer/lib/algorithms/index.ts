@@ -13,6 +13,12 @@ import { dfsSteps, bfsSteps } from './graphs/traversal';
 import { dijkstraSteps } from './graphs/dijkstra';
 import { nQueensSteps } from './backtracking/nQueens';
 import { huffmanSteps } from './greedy/huffman';
+import { stackSteps } from './data-structures/stack';
+import { queueSteps } from './data-structures/queue';
+import { circularQueueSteps } from './data-structures/circularQueue';
+import { evaluatePostfixSteps, infixToPostfixSteps } from './data-structures/expressionEval';
+import { queueUsingStacksSteps } from './data-structures/queueUsingStacks';
+import { mcmSteps } from './dp/mcm';
 import { AlgorithmResult } from './types';
 
 export type AlgorithmCategory =
@@ -33,7 +39,7 @@ export interface AlgorithmConfig {
     categoryLabel: string;
     course: '21CSC201J' | '21CSC204J' | 'Both';
     fn: (...args: any[]) => AlgorithmResult;
-    inputType: 'array' | 'array+target' | 'array+operation' | 'tree+operation' | 'strings' | 'items+capacity' | 'graph+node' | 'number' | 'frequencies';
+    inputType: 'array' | 'array+target' | 'array+operation' | 'tree+operation' | 'strings' | 'items+capacity' | 'graph+node' | 'number' | 'frequencies' | 'expression' | 'dimensions';
     operations?: string[];
     description: string;
 }
@@ -104,6 +110,72 @@ export const ALGORITHM_REGISTRY: Record<string, AlgorithmConfig> = {
         description: 'Linked list operations',
     },
 
+    // DSA Module 2: Stacks & Queues
+    'stack': {
+        id: 'stack',
+        name: 'Stack Operations',
+        category: 'dsa-module2',
+        categoryLabel: 'Module 2 - Stacks & Queues',
+        course: '21CSC201J',
+        fn: stackSteps,
+        inputType: 'array+operation',
+        operations: ['push', 'pop', 'peek', 'is-empty'],
+        description: 'LIFO data structure operations',
+    },
+    'queue': {
+        id: 'queue',
+        name: 'Queue Operations',
+        category: 'dsa-module2',
+        categoryLabel: 'Module 2 - Stacks & Queues',
+        course: '21CSC201J',
+        fn: queueSteps,
+        inputType: 'array+operation',
+        operations: ['enqueue', 'dequeue', 'peek', 'is-empty'],
+        description: 'FIFO data structure operations',
+    },
+    'circular-queue': {
+        id: 'circular-queue',
+        name: 'Circular Queue',
+        category: 'dsa-module2',
+        categoryLabel: 'Module 2 - Stacks & Queues',
+        course: '21CSC201J',
+        fn: circularQueueSteps,
+        inputType: 'array+operation',
+        operations: ['enqueue', 'dequeue', 'is-full', 'is-empty'],
+        description: 'Fixed size queue with wrap-around',
+    },
+    'postfix-eval': {
+        id: 'postfix-eval',
+        name: 'Postfix Evaluation',
+        category: 'dsa-module2',
+        categoryLabel: 'Module 2 - Stacks & Queues',
+        course: '21CSC201J',
+        fn: evaluatePostfixSteps,
+        inputType: 'expression',
+        description: 'Evaluate postfix expression using stack',
+    },
+    'infix-to-postfix': {
+        id: 'infix-to-postfix',
+        name: 'Infix to Postfix',
+        category: 'dsa-module2',
+        categoryLabel: 'Module 2 - Stacks & Queues',
+        course: '21CSC201J',
+        fn: infixToPostfixSteps,
+        inputType: 'expression',
+        description: 'Convert infix expression to postfix',
+    },
+    'queue-using-stacks': {
+        id: 'queue-using-stacks',
+        name: 'Queue using Stacks',
+        category: 'dsa-module2',
+        categoryLabel: 'Module 2 - Stacks & Queues',
+        course: '21CSC201J',
+        fn: queueUsingStacksSteps,
+        inputType: 'array+operation',
+        operations: ['enqueue', 'dequeue', 'peek'],
+        description: 'Implement queue behavior using two stacks',
+    },
+
     // DSA Module 3: Trees
     'bst': {
         id: 'bst',
@@ -143,18 +215,6 @@ export const ALGORITHM_REGISTRY: Record<string, AlgorithmConfig> = {
     'knapsack-01': {
         id: 'knapsack-01',
         name: '0/1 Knapsack',
-        category: 'daa-unit3',
-        categoryLabel: 'Unit 3 - Dynamic Programming',
-        course: '21CSC204J',
-        fn: knapsack01Steps,
-        inputType: 'items+capacity',
-        description: 'DP solution for 0/1 knapsack',
-    },
-
-    // More Divide & Conquer
-    'quick-sort': {
-        id: 'quick-sort',
-        name: 'Quick Sort',
         category: 'daa-unit2',
         categoryLabel: 'Unit 2 - Divide & Conquer',
         course: '21CSC204J',

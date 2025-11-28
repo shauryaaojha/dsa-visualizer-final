@@ -4,6 +4,8 @@ import { TreeRenderer } from './renderers/TreeRenderer';
 import { GraphRenderer } from './renderers/GraphRenderer';
 import { DpTableRenderer } from './renderers/DpTableRenderer';
 import { MatrixRenderer } from './renderers/MatrixRenderer';
+import { StackRenderer } from './renderers/StackRenderer';
+import { QueueRenderer } from './renderers/QueueRenderer';
 
 interface VisualizerCanvasProps {
     step: StepState | null;
@@ -24,6 +26,22 @@ export function VisualizerCanvas({ step, category }: VisualizerCanvasProps) {
         return (
             <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-x-auto">
                 <LinkedListRenderer state={step.linkedList} />
+            </div>
+        );
+    }
+
+    if (step.structureKind === 'stack' && step.stack) {
+        return (
+            <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
+                <StackRenderer state={step.stack} />
+            </div>
+        );
+    }
+
+    if (step.structureKind === 'queue' && step.queue) {
+        return (
+            <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
+                <QueueRenderer state={step.queue} />
             </div>
         );
     }
