@@ -7,6 +7,14 @@ import { MatrixRenderer } from './renderers/MatrixRenderer';
 import { StackRenderer } from './renderers/StackRenderer';
 import { QueueRenderer } from './renderers/QueueRenderer';
 import { HashTableRenderer } from './renderers/HashTableRenderer';
+import { ArrayView } from './views/ArrayView';
+import { LinkedListView } from './views/LinkedListView';
+import { StackView } from './views/StackView';
+import { QueueView } from './views/QueueView';
+import { TreeView } from './views/TreeView';
+import { GraphView } from './views/GraphView';
+import { DpTableView } from './views/DpTableView';
+import { MatrixView } from './views/MatrixView';
 
 interface VisualizerCanvasProps {
     step: StepState | null;
@@ -16,127 +24,115 @@ interface VisualizerCanvasProps {
 export function VisualizerCanvas({ step, category }: VisualizerCanvasProps) {
     if (!step) {
         return (
-            <div className="h-64 flex items-center justify-center bg-white rounded-lg border border-gray-200 text-gray-400">
-                Enter input and click Run to start
+            <div className="h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-gray-200 text-gray-400">
+                <div className="text-center">
+                    <div className="text-4xl mb-2">📊</div>
+                    <div className="text-sm">Enter input and click Run to start</div>
+                </div>
             </div>
         );
     }
 
-    // Render based on structure kind
+    // Canvas container with fixed height and overflow handling
+    const canvasClass = "bg-white rounded-lg border-2 border-gray-200 shadow-md overflow-hidden";
+    const canvasStyle = "h-[420px] md:h-[480px]";
+
+    // Module 1: Use new ArrayView for array visualizations
+    if (step.array && !step.structureKind) {
+        return (
+            <div className={`${canvasClass} ${canvasStyle}`}>
+                <ArrayView array={step.array} highlights={step.highlights} />
+            </div>
+        );
+    }
+
+    // Module 1: Use new LinkedListView
     if (step.structureKind === 'linked-list' && step.linkedList) {
         return (
-            <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-x-auto">
-                <LinkedListRenderer state={step.linkedList} />
+            <div className={`${canvasClass} ${canvasStyle}`}>
+                <LinkedListView state={step.linkedList} />
             </div>
         );
     }
 
+    // Module 2: Stack - Use new StackView
     if (step.structureKind === 'stack' && step.stack) {
         return (
-            <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
-                <StackRenderer state={step.stack} />
+            <div className={`${canvasClass} ${canvasStyle}`}>
+                <StackView state={step.stack} />
             </div>
         );
     }
 
+    // Module 2: Queue - Use new QueueView
     if (step.structureKind === 'queue' && step.queue) {
         return (
-            <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
-                <QueueRenderer state={step.queue} />
+            <div className={`${canvasClass} ${canvasStyle}`}>
+                <QueueView state={step.queue} />
             </div>
         );
     }
 
+    // Module 3: Hash Table (keep existing for now)
     if (step.structureKind === 'hash-table' && step.hashTable) {
         return (
-            <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
+            <div className={`${canvasClass} ${canvasStyle} overflow-auto`}>
                 <HashTableRenderer state={step.hashTable} />
             </div>
         );
     }
 
+    // Module 3: Tree - Use new TreeView
     if (step.structureKind === 'tree' && step.tree) {
         return (
-            <div className="min-h-96 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
-                <TreeRenderer state={step.tree} />
+            <div className={`${canvasClass} h-[480px] md:h-[540px]`}>
+                <TreeView state={step.tree} />
             </div>
         );
     }
 
+    // Module 4: Graph - Use new GraphView
     if (step.structureKind === 'graph' && step.graph) {
         return (
-            <div className="min-h-96 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
-                <GraphRenderer state={step.graph} />
+            <div className={`${canvasClass} h-[480px] md:h-[540px]`}>
+                <GraphView state={step.graph} />
             </div>
         );
     }
 
+    // Module 5 & DAA: DP Table - Use new DpTableView
     if (step.structureKind === 'dp-table' && step.dpTable) {
         return (
-            <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
-                <DpTableRenderer state={step.dpTable} />
+            <div className={`${canvasClass} ${canvasStyle}`}>
+                <DpTableView state={step.dpTable} />
             </div>
         );
     }
 
+    // Module 5: Matrix - Use new MatrixView
     if (step.structureKind === 'matrix' && step.matrix) {
         return (
-            <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
-                <MatrixRenderer state={step.matrix} />
+            <div className={`${canvasClass} ${canvasStyle}`}>
+                <MatrixView state={step.matrix} />
             </div>
         );
     }
 
-    // Default: Array visualization (existing Level 1 code)
+    // Fallback: Old array visualization for compatibility
     if (step.array) {
-        const { array, highlights } = step;
-        const maxVal = Math.max(...array, 1);
-
         return (
-            <div className="h-80 flex items-end justify-center gap-2 p-8 bg-white rounded-lg border border-gray-200 shadow-sm overflow-x-auto">
-                {array.map((val, idx) => {
-                    let colorClass = 'bg-blue-200 border-blue-300'; // Default
-
-                    if (highlights) {
-                        if (highlights.indices.includes(idx)) {
-                            switch (highlights.type) {
-                                case 'compare': colorClass = 'bg-yellow-400 border-yellow-500'; break;
-                                case 'swap': colorClass = 'bg-red-400 border-red-500'; break;
-                                case 'found': colorClass = 'bg-green-500 border-green-600'; break;
-                                case 'current': colorClass = 'bg-purple-400 border-purple-500'; break;
-                                case 'mid': colorClass = 'bg-orange-400 border-orange-500'; break;
-                                case 'low': colorClass = 'bg-gray-400 border-gray-500'; break;
-                                case 'high': colorClass = 'bg-gray-400 border-gray-500'; break;
-                                case 'sorted': colorClass = 'bg-green-300 border-green-400'; break;
-                            }
-                        }
-                    }
-
-                    const heightPercent = (val / maxVal) * 100;
-
-                    return (
-                        <div key={idx} className="flex flex-col items-center gap-1 group relative">
-                            {/* Value Label */}
-                            <span className="text-xs font-medium text-gray-600 mb-1">{val}</span>
-
-                            {/* Bar */}
-                            <div
-                                className={`w-8 rounded-t-md border transition-all duration-200 ${colorClass}`}
-                                style={{ height: `${Math.max(heightPercent, 10)}%` }} // Min height for visibility
-                            ></div>
-
-                            {/* Index Label */}
-                            <span className="text-[10px] text-gray-400 mt-1">{idx}</span>
-                        </div>
-                    );
-                })}
+            <div className={`${canvasClass} ${canvasStyle}`}>
+                <ArrayView array={step.array} highlights={step.highlights} />
             </div>
         );
     }
 
     return (
-        <div className="h-64 flex items-center justify-center bg-white rounded-lg border border-gray-200 text-gray-400">
-            No visualization available
+        <div className={`${canvasClass} ${canvasStyle} flex items-center justify-center text-gray-400`}>
+            <div className="text-center">
+                <div className="text-4xl mb-2">⚠️</div>
+                <div className="text-sm">No visualization available for this step</div>
+            </div>
         </div>
     );
 }
