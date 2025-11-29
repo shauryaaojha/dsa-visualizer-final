@@ -12,7 +12,10 @@ export function DpTableRenderer({ state }: DpTableRendererProps) {
     };
 
     const getCellColor = (row: number, col: number) => {
-        if (isCellHighlighted(row, col)) {
+        const cell = highlightedCells.find(c => c.row === row && c.col === col);
+        if (cell) {
+            if (cell.color) return cell.color;
+
             switch (highlightType) {
                 case 'current': return 'bg-yellow-300';
                 case 'compare': return 'bg-orange-300';

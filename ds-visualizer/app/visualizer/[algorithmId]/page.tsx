@@ -73,45 +73,350 @@ export default function AlgorithmPage() {
           break;
         case 'graph+node':
           res = algorithm.fn(params.nodes, params.edges, params.start);
+          break;
+        case 'number':
+          res = algorithm.fn(params.n);
+          break;
+        case 'frequencies':
+          res = algorithm.fn(params.frequencies);
+          break;
+        case 'expression':
+          res = algorithm.fn(params.expression);
+          break;
+        case 'dimensions':
+          res = algorithm.fn(params.dimensions);
+          break;
+        default:
+          res = algorithm.fn(params.array);
+      }
+
+      setResult(res);
+      setCurrentStep(0);
+      setIsPlaying(true);
+    } catch (error) {
+      console.error('Algorithm execution error:', error);
+      alert('Error running algorithm. Check the console for details.');
+    }
+  };
+
+  if (!algorithm) {
+    return <div className="text-center py-20 text-gray-500">Algorithm not found</div>;
+  }
+
+  const currentStepData = result ? result.steps[currentStep] : null;
+
+  // Pseudocode library
+  const pseudocodeLibrary: Record<string, string> = {
+    'bubble-sort': `procedure bubbleSort(A: list)
+  n = length(A)
+  for i = 0 to n-1
+    for j = 0 to n-i-2
+      if A[j] > A[j+1]
+        swap(A[j], A[j+1])`,
+    'selection-sort': `procedure selectionSort(A: list)
+  n = length(A)
+  for i = 0 to n-1
+    minIdx = i
+    for j = i+1 to n
+      if A[j] < A[minIdx]
+        minIdx = j
+    swap(A[i], A[minIdx])`,
+    'insertion-sort': `procedure insertionSort(A: list)
+  for i = 1 to n-1
+    key = A[i]
+    j = i - 1
+    while j >= 0 and A[j] > key
+      A[j+1] = A[j]
+      j = j - 1
+    A[j+1] = key`,
+    'linear-search': `procedure linearSearch(A, target)
+  for i = 0 to length(A)-1
+    if A[i] == target
+      return i
+  return -1`,
+    'binary-search': `procedure binarySearch(A, target)
+  low = 0, high = length(A)-1
+  while low <= high
+    mid = (low + high) / 2
+    if A[mid] == target
+      return mid
+    else if A[mid] < target
+      low = mid + 1
+    else
+      high = mid - 1
+  return -1`,
+    'merge-sort': `procedure mergeSort(A, left, right)
+  if left < right
+    mid = (left + right) / 2
+    mergeSort(A, left, mid)
+    mergeSort(A, mid+1, right)
+    merge(A, left, mid, right)`,
+    'quick-sort': `procedure quickSort(A, low, high)
+  if low < high
+    pivot = partition(A, low, high)
+    quickSort(A, low, pivot-1)
+    quickSort(A, pivot+1, high)`,
+    'linked-list': `Linked List Operations:
+- insert(value, position)
+- delete(position)
+- search(value)
+- traverse()`,
+    'stack': `Stack Operations (LIFO):
+- push(x): Add x to top
+- pop(): Remove top element
+- peek(): View top element
+- isEmpty(): Check if empty`,
+    'queue': `Queue Operations (FIFO):
+- enqueue(x): Add x to rear
+- dequeue(): Remove front element
+- peek(): View front element
+- isEmpty(): Check if empty`,
+    'circular-queue': `Circular Queue:
+- enqueue(x): rear = (rear + 1) % N
+- dequeue(): front = (front + 1) % N
+- isFull(): (rear + 1) % N == front`,
+    'postfix-eval': `Postfix Evaluation:
+- Scan expression left to right
+- If operand: push to stack
+- If operator: 
+    op2 = pop(), op1 = pop()
+    result = op1 operator op2
+    push result`,
+    'infix-to-postfix': `Infix to Postfix:
+- Scan expression left to right
+- If operand: output it
+- If '(': push to stack
+- If ')': pop until '('
+- If operator: pop higher precedence ops, then push`,
+    'queue-using-stacks': `Queue using Stacks:
+- Enqueue(x): Push x to Stack1
+- Dequeue():
+    If Stack2 empty:
+        Pop all from Stack1, Push to Stack2
+    Pop from Stack2`,
+    'bst': `BST Operations:
+- insert(value)
+- search(value)
+- inorder traversal
+- preorder traversal
+- postorder traversal`,
+    'avl': `AVL Insert(node, value)
+  if node is null return new Node(value)
+  if value < node.value
+    node.left = insert(node.left, value)
+  else
+    node.right = insert(node.right, value)
+  
+  update height(node)
+  balance = getBalance(node)
+  
+  if balance > 1 && value < node.left.value
+    return rightRotate(node)
+  if balance < -1 && value > node.right.value
+    return leftRotate(node)
+  if balance > 1 && value > node.left.value
+    node.left = leftRotate(node.left)
+    return rightRotate(node)
+  if balance < -1 && value < node.right.value
+    node.right = rightRotate(node.right)
+    return leftRotate(node)
+  return node`,
+    'min-heap': `Min-Heap Insert(A, val)
+  A.push(val)
+  i = A.length - 1
+  while i > 0 and A[parent(i)] > A[i]
+    swap(A[i], A[parent(i)])
+    i = parent(i)`,
+    'max-heap': `Max-Heap Insert(A, val)
+  A.push(val)
+  i = A.length - 1
+  while i > 0 and A[parent(i)] < A[i]
+    swap(A[i], A[parent(i)])
+    i = parent(i)`,
+    'heap-sort': `HeapSort(A)
+  BuildMaxHeap(A)
+  for i = n-1 down to 1
+    swap(A[0], A[i])
+    n = n - 1
+    MaxHeapify(A, 0)`,
+    'linear-probing': `LinearProbing(key)
+  h = key % size
+  i = 0
+  while table[(h + i) % size] is occupied
+    i = i + 1
+  table[(h + i) % size] = key`,
+    'quadratic-probing': `QuadraticProbing(key)
+  h = key % size
+  i = 0
+  while table[(h + i*i) % size] is occupied
+    i = i + 1
+  table[(h + i*i) % size] = key`,
+    'chaining': `Chaining(key)
+  h = key % size
+  insert key into linked list at table[h]`,
+    'polynomial-addition': `PolyAdd(P1, P2)
+  i = 0, j = 0
+  while i < len(P1) and j < len(P2)
+    if P1[i].exp == P2[j].exp
+      sum = P1[i].coeff + P2[j].coeff
+      append (sum, P1[i].exp) to Result
+      i++, j++
+    else if P1[i].exp > P2[j].exp
+      append P1[i] to Result
+      i++
+    else
+      append P2[j] to Result
+      j++
+  append remaining terms`,
+    'sparse-matrix': `SparseMatrix(M)
+  rows = M.rows, cols = M.cols
+  for i = 0 to rows-1
+    for j = 0 to cols-1
+      if M[i][j] != 0
+        add <i, j, M[i][j]> to TripletTable`,
+    'master-theorem': `MasterTheorem(a, b, k)
+  Calculate log_b(a)
+  Compare k with log_b(a)
+  Case 1: k < log_b(a) => T(n) = Θ(n^log_b(a))
+  Case 2: k = log_b(a) => T(n) = Θ(n^k * log n)
+  Case 3: k > log_b(a) => T(n) = Θ(n^k) (if regularity holds)`,
+    'vertex-cover': `VertexCover(G)
+  C = ∅
+  while E ≠ ∅
+    pick arbitrary edge (u,v) ∈ E
+    C = C ∪ {u, v}
+    remove all edges incident to u or v
+  return C`,
+    'floyd-warshall': `FloydWarshall(G)
+  for k = 0 to n-1
+    for i = 0 to n-1
+      for j = 0 to n-1
+        if dist[i][k] + dist[k][j] < dist[i][j]
+          dist[i][j] = dist[i][k] + dist[k][j]`,
+    'bellman-ford': `BellmanFord(G, s)
+  dist[s] = 0, all others = INF
+  for i = 1 to n-1
+    for each edge (u,v) with weight w
+      if dist[u] + w < dist[v]
+        dist[v] = dist[u] + w
+  check for negative cycles`,
+    'topological-sort': `TopologicalSort(G)
+  calculate in-degree for all vertices
+  queue Q = vertices with in-degree 0
+  while Q not empty
+    u = Q.dequeue()
+    output u
+    for each neighbor v of u
+      in-degree[v]--
+      if in-degree[v] == 0
+        Q.enqueue(v)`,
+    'doubly-linked-list': `DoublyLinkedList Operations
+  Insert at Beginning:
+    newNode.next = head
+    if head != null: head.prev = newNode
+    head = newNode
+  Traverse Forward: head → next → next...
+  Traverse Backward: tail → prev → prev...`,
+    'lcs': `LCS(X, Y)
+  m = length(X), n = length(Y)
+  for i = 1 to m
+    for j = 1 to n
+      if X[i] == Y[j]
+        dp[i][j] = dp[i-1][j-1] + 1
+      else
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+  return dp[m][n]`,
+    'knapsack-01': `Knapsack(items, W)
+  for i = 1 to n
+    for w = 0 to W
+      if weight[i] <= w
+        dp[i][w] = max(
+          dp[i-1][w], 
+          dp[i-1][w-weight[i]] + value[i]
+        )
+      else
+        dp[i][w] = dp[i-1][w]
+  return dp[n][W]`,
+    'mcm': `MCM(p)
+  n = p.length - 1
+  for i = 1 to n
+    m[i][i] = 0
+  for L = 2 to n
+    for i = 1 to n-L+1
+      j = i+L-1
+      m[i][j] = ∞
+      for k = i to j-1
+        q = m[i][k] + m[k+1][j] + p[i-1]*p[k]*p[j]
+        if q < m[i][j]
+          m[i][j] = q`,
+    'dfs': `DFS(G, start)
   mark start as visited
-          while queue not empty
-          node = queue.dequeue()
-          for each neighbor of node
-          if neighbor not visited
+  for each neighbor of start
+    if neighbor not visited
+      DFS(G, neighbor)`,
+    'bfs': `BFS(G, start)
+  queue.enqueue(start)
+  mark start as visited
+  while queue not empty
+    node = queue.dequeue()
+    for each neighbor of node
+      if neighbor not visited
         mark neighbor as visited
-          queue.enqueue(neighbor)`,
+        queue.enqueue(neighbor)`,
     'dijkstra': `Dijkstra(G, start)
-          for each node v
+  for each node v
     dist[v] = ∞
-          dist[start] = 0
-          while unvisited nodes exist
-          u = node with min dist
+  dist[start] = 0
+  while unvisited nodes exist
+    u = node with min dist
     mark u as visited
-          for each neighbor v of u
-          alt = dist[u] + weight(u, v)
-          if alt < dist[v]
+    for each neighbor v of u
+      alt = dist[u] + weight(u,v)
+      if alt < dist[v]
         dist[v] = alt`,
+    'prims': `Prim(G, start)
+  for each u in V
+    key[u] = ∞
+    parent[u] = null
+  key[start] = 0
+  Q = V
+  while Q is not empty
+    u = extract-min(Q)
+    for each v in Adj[u]
+      if v in Q and w(u,v) < key[v]
+        parent[v] = u
+        key[v] = w(u,v)`,
+    'kruskals': `Kruskal(G)
+  A = ∅
+  for each v in V
+    make-set(v)
+  sort edges E by weight
+  for each edge (u,v) in E
+    if find-set(u) ≠ find-set(v)
+      A = A ∪ {(u,v)}
+      union(u,v)
+  return A`,
     'n-queens': `NQueens(board, row)
-          if row == n
+  if row == n
     return solution
-          for col = 0 to n - 1
+  for col = 0 to n-1
     if isSafe(board, row, col)
-      place queen at(row, col)
-          if NQueens(board, row + 1)
+      place queen at (row, col)
+      if NQueens(board, row+1)
         return true
-      remove queen from(row, col)
-          return false`,
+      remove queen from (row, col)
+  return false`,
     'huffman': `HuffmanCoding(frequencies)
   create leaf node for each char
   build min heap
-          while heap.size() > 1
+  while heap.size() > 1
     left = extract min
-          right = extract min
-          parent = new node(left.freq + right.freq)
-          parent.left = left
-          parent.right = right
+    right = extract min
+    parent = new node(left.freq + right.freq)
+    parent.left = left
+    parent.right = right
     insert parent into heap
-          return heap.top() as root`,
+  return heap.top() as root`,
   };
 
   const pseudocode = pseudocodeLibrary[algorithmId] || pseudocodeLibrary['bubble-sort'];

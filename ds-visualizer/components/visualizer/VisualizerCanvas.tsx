@@ -6,6 +6,7 @@ import { DpTableRenderer } from './renderers/DpTableRenderer';
 import { MatrixRenderer } from './renderers/MatrixRenderer';
 import { StackRenderer } from './renderers/StackRenderer';
 import { QueueRenderer } from './renderers/QueueRenderer';
+import { HashTableRenderer } from './renderers/HashTableRenderer';
 
 interface VisualizerCanvasProps {
     step: StepState | null;
@@ -42,6 +43,14 @@ export function VisualizerCanvas({ step, category }: VisualizerCanvasProps) {
         return (
             <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
                 <QueueRenderer state={step.queue} />
+            </div>
+        );
+    }
+
+    if (step.structureKind === 'hash-table' && step.hashTable) {
+        return (
+            <div className="min-h-64 bg-white rounded-lg border border-gray-200 shadow-sm overflow-auto">
+                <HashTableRenderer state={step.hashTable} />
             </div>
         );
     }

@@ -19,6 +19,16 @@ import { circularQueueSteps } from './data-structures/circularQueue';
 import { evaluatePostfixSteps, infixToPostfixSteps } from './data-structures/expressionEval';
 import { queueUsingStacksSteps } from './data-structures/queueUsingStacks';
 import { mcmSteps } from './dp/mcm';
+import { avlSteps } from './data-structures/avl';
+import { minHeapSteps, maxHeapSteps, heapSortSteps } from './data-structures/heap';
+import { linearProbingSteps, quadraticProbingSteps, chainingSteps } from './data-structures/hashing';
+import { polynomialAdditionSteps } from './applications/polynomial';
+import { sparseMatrixSteps } from './applications/sparseMatrix';
+import { masterTheoremSteps } from './daa/masterTheorem';
+import { vertexCoverSteps } from './daa/approximation';
+import { floydWarshallSteps, bellmanFordSteps, topologicalSortSteps } from './graphs/advanced';
+import { doublyLinkedListSteps } from './data-structures/doublyLinkedList';
+import { primSteps, kruskalSteps } from './graphs/mst';
 import { AlgorithmResult } from './types';
 
 export type AlgorithmCategory =
@@ -27,9 +37,12 @@ export type AlgorithmCategory =
     | 'dsa-module2'
     | 'dsa-module3'
     | 'dsa-module4'
+    | 'dsa-module5'
+    | 'daa-unit1'
     | 'daa-unit2'
     | 'daa-unit3'
     | 'daa-unit4'
+    | 'daa-unit5'
     | 'daa-greedy';
 
 export interface AlgorithmConfig {
@@ -39,7 +52,7 @@ export interface AlgorithmConfig {
     categoryLabel: string;
     course: '21CSC201J' | '21CSC204J' | 'Both';
     fn: (...args: any[]) => AlgorithmResult;
-    inputType: 'array' | 'array+target' | 'array+operation' | 'tree+operation' | 'strings' | 'items+capacity' | 'graph+node' | 'number' | 'frequencies' | 'expression' | 'dimensions';
+    inputType: 'array' | 'array+target' | 'array+operation' | 'tree+operation' | 'strings' | 'items+capacity' | 'graph+node' | 'number' | 'frequencies' | 'expression' | 'dimensions' | 'polynomial' | 'matrix';
     operations?: string[];
     description: string;
 }
@@ -108,6 +121,17 @@ export const ALGORITHM_REGISTRY: Record<string, AlgorithmConfig> = {
         inputType: 'array+operation',
         operations: ['insert-begin', 'insert-end', 'insert-middle', 'delete-begin', 'delete-end', 'search', 'traverse'],
         description: 'Linked list operations',
+    },
+    'doubly-linked-list': {
+        id: 'doubly-linked-list',
+        name: 'Doubly Linked List',
+        category: 'dsa-module1',
+        categoryLabel: 'Module 1 - Linked Lists',
+        course: '21CSC201J',
+        fn: doublyLinkedListSteps,
+        inputType: 'array+operation',
+        operations: ['insert-begin', 'insert-end', 'delete-begin', 'traverse-forward', 'traverse-backward'],
+        description: 'Doubly linked list operations',
     },
 
     // DSA Module 2: Stacks & Queues
@@ -188,6 +212,110 @@ export const ALGORITHM_REGISTRY: Record<string, AlgorithmConfig> = {
         operations: ['insert', 'search', 'inorder', 'preorder', 'postorder'],
         description: 'BST operations and traversals',
     },
+    'avl': {
+        id: 'avl',
+        name: 'AVL Tree',
+        category: 'dsa-module3',
+        categoryLabel: 'Module 3 - Trees',
+        course: '21CSC201J',
+        fn: avlSteps,
+        inputType: 'array',
+        description: 'Self-balancing BST with rotations',
+    },
+    'min-heap': {
+        id: 'min-heap',
+        name: 'Min Heap',
+        category: 'dsa-module3',
+        categoryLabel: 'Module 3 - Trees',
+        course: '21CSC201J',
+        fn: minHeapSteps,
+        inputType: 'array',
+        description: 'Binary Heap where parent <= children',
+    },
+    'max-heap': {
+        id: 'max-heap',
+        name: 'Max Heap',
+        category: 'dsa-module3',
+        categoryLabel: 'Module 3 - Trees',
+        course: '21CSC201J',
+        fn: maxHeapSteps,
+        inputType: 'array',
+        description: 'Binary Heap where parent >= children',
+    },
+    'heap-sort': {
+        id: 'heap-sort',
+        name: 'Heap Sort',
+        category: 'dsa-module3',
+        categoryLabel: 'Module 3 - Trees',
+        course: '21CSC201J',
+        fn: heapSortSteps,
+        inputType: 'array',
+        description: 'Sorting using Max Heap',
+    },
+    'linear-probing': {
+        id: 'linear-probing',
+        name: 'Hashing (Linear Probing)',
+        category: 'dsa-module3',
+        categoryLabel: 'Module 3 - Trees & Hashing',
+        course: '21CSC201J',
+        fn: linearProbingSteps,
+        inputType: 'array',
+        description: 'Hash Table with Linear Probing',
+    },
+    'quadratic-probing': {
+        id: 'quadratic-probing',
+        name: 'Hashing (Quadratic Probing)',
+        category: 'dsa-module3',
+        categoryLabel: 'Module 3 - Trees & Hashing',
+        course: '21CSC201J',
+        fn: quadraticProbingSteps,
+        inputType: 'array',
+        description: 'Hash Table with Quadratic Probing',
+    },
+    'chaining': {
+        id: 'chaining',
+        name: 'Hashing (Chaining)',
+        category: 'dsa-module3',
+        categoryLabel: 'Module 3 - Trees & Hashing',
+        course: '21CSC201J',
+        fn: chainingSteps,
+        inputType: 'array',
+        description: 'Hash Table with Separate Chaining',
+    },
+
+    // DSA Module 5: Applications
+    'polynomial-addition': {
+        id: 'polynomial-addition',
+        name: 'Polynomial Addition',
+        category: 'dsa-module5',
+        categoryLabel: 'Module 5 - Applications',
+        course: '21CSC201J',
+        fn: (poly1, poly2) => polynomialAdditionSteps(poly1, poly2),
+        inputType: 'polynomial', // Need to add this input type
+        description: 'Adding two polynomials using Linked List',
+    },
+    'sparse-matrix': {
+        id: 'sparse-matrix',
+        name: 'Sparse Matrix Representation',
+        category: 'dsa-module5',
+        categoryLabel: 'Module 5 - Applications',
+        course: '21CSC201J',
+        fn: sparseMatrixSteps,
+        inputType: 'matrix',
+        description: 'Converting Matrix to Triplet Representation',
+    },
+
+    // DAA Unit 1: Algorithm Design
+    'master-theorem': {
+        id: 'master-theorem',
+        name: 'Master Theorem Solver',
+        category: 'daa-unit1', // Need to add this category
+        categoryLabel: 'Unit 1 - Algorithm Design',
+        course: '21CSC204J',
+        fn: masterTheoremSteps,
+        inputType: 'array', // Using array [a, b, k]
+        description: 'Solve Recurrences T(n) = aT(n/b) + O(n^k)',
+    },
 
     // DAA Unit 2: Divide and Conquer
     'merge-sort': {
@@ -218,9 +346,9 @@ export const ALGORITHM_REGISTRY: Record<string, AlgorithmConfig> = {
         category: 'daa-unit2',
         categoryLabel: 'Unit 2 - Divide & Conquer',
         course: '21CSC204J',
-        fn: quickSortSteps,
-        inputType: 'array',
-        description: 'Partition-based divide and conquer sorting',
+        fn: knapsack01Steps,
+        inputType: 'items+capacity',
+        description: 'DP solution for 0/1 Knapsack',
     },
 
     // Graphs (DSA Module 4)
@@ -254,6 +382,56 @@ export const ALGORITHM_REGISTRY: Record<string, AlgorithmConfig> = {
         inputType: 'graph+node',
         description: 'Shortest path algorithm',
     },
+    'prims': {
+        id: 'prims',
+        name: "Prim's Algorithm",
+        category: 'dsa-module4',
+        categoryLabel: 'Module 4 - Graphs',
+        course: '21CSC201J',
+        fn: (nodes, edges, start) => primSteps(nodes, edges, start),
+        inputType: 'graph+node',
+        description: 'Minimum Spanning Tree (Greedy)',
+    },
+    'kruskals': {
+        id: 'kruskals',
+        name: "Kruskal's Algorithm",
+        category: 'dsa-module4',
+        categoryLabel: 'Module 4 - Graphs',
+        course: '21CSC201J',
+        fn: (nodes, edges) => kruskalSteps(nodes, edges),
+        inputType: 'graph+node',
+        description: 'Minimum Spanning Tree (Greedy)',
+    },
+    'floyd-warshall': {
+        id: 'floyd-warshall',
+        name: "Floyd-Warshall Algorithm",
+        category: 'dsa-module4',
+        categoryLabel: 'Module 4 - Graphs',
+        course: '21CSC201J',
+        fn: (nodes, edges) => floydWarshallSteps(nodes, edges),
+        inputType: 'graph+node',
+        description: 'All-pairs shortest path (Dynamic Programming)',
+    },
+    'bellman-ford': {
+        id: 'bellman-ford',
+        name: "Bellman-Ford Algorithm",
+        category: 'dsa-module4',
+        categoryLabel: 'Module 4 - Graphs',
+        course: '21CSC201J',
+        fn: (nodes, edges, start) => bellmanFordSteps(nodes, edges, start),
+        inputType: 'graph+node',
+        description: 'Single-source shortest path (handles negative weights)',
+    },
+    'topological-sort': {
+        id: 'topological-sort',
+        name: 'Topological Sort',
+        category: 'dsa-module4',
+        categoryLabel: 'Module 4 - Graphs',
+        course: '21CSC201J',
+        fn: (nodes, edges) => topologicalSortSteps(nodes, edges),
+        inputType: 'graph+node',
+        description: 'Linear ordering of vertices in DAG',
+    },
 
     // Backtracking (DAA Unit 4)
     'n-queens': {
@@ -265,6 +443,18 @@ export const ALGORITHM_REGISTRY: Record<string, AlgorithmConfig> = {
         fn: nQueensSteps,
         inputType: 'number',
         description: 'Place N queens on N×N board (backtracking)',
+    },
+
+    // DAA Unit 5: Approximation Algorithms
+    'vertex-cover': {
+        id: 'vertex-cover',
+        name: 'Vertex Cover (Approximation)',
+        category: 'daa-unit5',
+        categoryLabel: 'Unit 5 - Approximation',
+        course: '21CSC204J',
+        fn: (nodes, edges) => vertexCoverSteps(nodes, edges),
+        inputType: 'graph+node',
+        description: '2-Approximation for Vertex Cover problem',
     },
 
     // Greedy
@@ -295,9 +485,12 @@ export function getAllCategories(): { category: AlgorithmCategory; label: string
         { category: 'dsa-module2', label: 'Module 2 - Stacks & Queues', course: '21CSC201J' },
         { category: 'dsa-module3', label: 'Module 3 - Trees, Heaps & Hashing', course: '21CSC201J' },
         { category: 'dsa-module4', label: 'Module 4 - Graphs', course: '21CSC201J' },
+        { category: 'dsa-module5', label: 'Module 5 - Applications', course: '21CSC201J' },
+        { category: 'daa-unit1', label: 'Unit 1 - Algorithm Design', course: '21CSC204J' },
         { category: 'daa-unit2', label: 'Unit 2 - Divide & Conquer', course: '21CSC204J' },
         { category: 'daa-unit3', label: 'Unit 3 - Dynamic Programming', course: '21CSC204J' },
         { category: 'daa-unit4', label: 'Unit 4 - Backtracking', course: '21CSC204J' },
+        { category: 'daa-unit5', label: 'Unit 5 - Approximation Algorithms', course: '21CSC204J' },
         { category: 'daa-greedy', label: 'Greedy Algorithms', course: '21CSC204J' },
     ];
 }

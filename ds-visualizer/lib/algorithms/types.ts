@@ -160,7 +160,7 @@ export interface DpTableState {
   table: (number | string)[][];
   rows: number;
   cols: number;
-  highlightedCells?: Array<{ row: number; col: number }>;
+  highlightedCells?: Array<{ row: number; col: number; color?: string }>;
   highlightType?: HighlightType;
   rowLabels?: string[];
   colLabels?: string[];

@@ -12,7 +12,9 @@ export function mcmSteps(dimensions: number[]): AlgorithmResult {
     steps.push({
         structureKind: 'dp-table',
         dpTable: {
-            data: m,
+            table: m,
+            rows: n + 1,
+            cols: n + 1,
             rowLabels: Array(n + 1).fill('').map((_, i) => i === 0 ? '' : `M${i}`),
             colLabels: Array(n + 1).fill('').map((_, i) => i === 0 ? '' : `M${i}`),
             highlightedCells: [],
@@ -28,7 +30,9 @@ export function mcmSteps(dimensions: number[]): AlgorithmResult {
         steps.push({
             structureKind: 'dp-table',
             dpTable: {
-                data: JSON.parse(JSON.stringify(m)),
+                table: JSON.parse(JSON.stringify(m)),
+                rows: n + 1,
+                cols: n + 1,
                 rowLabels: Array(n + 1).fill('').map((_, idx) => idx === 0 ? '' : `M${idx}`),
                 colLabels: Array(n + 1).fill('').map((_, idx) => idx === 0 ? '' : `M${idx}`),
                 highlightedCells: [{ row: i, col: i, color: 'bg-green-200' }],
@@ -48,7 +52,9 @@ export function mcmSteps(dimensions: number[]): AlgorithmResult {
             steps.push({
                 structureKind: 'dp-table',
                 dpTable: {
-                    data: JSON.parse(JSON.stringify(m)),
+                    table: JSON.parse(JSON.stringify(m)),
+                    rows: n + 1,
+                    cols: n + 1,
                     rowLabels: Array(n + 1).fill('').map((_, idx) => idx === 0 ? '' : `M${idx}`),
                     colLabels: Array(n + 1).fill('').map((_, idx) => idx === 0 ? '' : `M${idx}`),
                     highlightedCells: [{ row: i, col: j, color: 'bg-yellow-200' }],
@@ -67,7 +73,9 @@ export function mcmSteps(dimensions: number[]): AlgorithmResult {
                 steps.push({
                     structureKind: 'dp-table',
                     dpTable: {
-                        data: JSON.parse(JSON.stringify(m)),
+                        table: JSON.parse(JSON.stringify(m)),
+                        rows: n + 1,
+                        cols: n + 1,
                         rowLabels: Array(n + 1).fill('').map((_, idx) => idx === 0 ? '' : `M${idx}`),
                         colLabels: Array(n + 1).fill('').map((_, idx) => idx === 0 ? '' : `M${idx}`),
                         highlightedCells: [
@@ -88,7 +96,9 @@ export function mcmSteps(dimensions: number[]): AlgorithmResult {
                     steps.push({
                         structureKind: 'dp-table',
                         dpTable: {
-                            data: JSON.parse(JSON.stringify(m)),
+                            table: JSON.parse(JSON.stringify(m)),
+                            rows: n + 1,
+                            cols: n + 1,
                             rowLabels: Array(n + 1).fill('').map((_, idx) => idx === 0 ? '' : `M${idx}`),
                             colLabels: Array(n + 1).fill('').map((_, idx) => idx === 0 ? '' : `M${idx}`),
                             highlightedCells: [{ row: i, col: j, color: 'bg-green-200' }],
